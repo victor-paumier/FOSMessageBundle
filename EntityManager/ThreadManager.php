@@ -12,7 +12,6 @@ use FOS\MessageBundle\Model\ParticipantInterface;
 use FOS\MessageBundle\Model\ReadableInterface;
 use FOS\MessageBundle\Model\ThreadInterface;
 use FOS\MessageBundle\ModelManager\ThreadManager as BaseThreadManager;
-use PDO;
 
 /**
  * Default ORM ThreadManager.
@@ -162,11 +161,11 @@ class ThreadManager extends BaseThreadManager
 
             // the thread does not contain spam or flood
             ->andWhere('t.isSpam = :isSpam')
-            ->setParameter('isSpam', false, PDO::PARAM_BOOL)
+            ->setParameter('isSpam', false, \PDO::PARAM_BOOL)
 
             // the thread is not deleted by this participant
             ->andWhere('tm.isDeleted = :isDeleted')
-            ->setParameter('isDeleted', false, PDO::PARAM_BOOL)
+            ->setParameter('isDeleted', false, \PDO::PARAM_BOOL)
 
             // there is at least one message written by this participant
             ->andWhere('tm.lastParticipantMessageDate IS NOT NULL')
@@ -201,7 +200,7 @@ class ThreadManager extends BaseThreadManager
 
             // the thread is deleted by this participant
             ->andWhere('tm.isDeleted = :isDeleted')
-            ->setParameter('isDeleted', true, PDO::PARAM_BOOL)
+            ->setParameter('isDeleted', true, \PDO::PARAM_BOOL)
 
             // sort by date of last message
             ->orderBy('tm.lastMessageDate', 'DESC')
@@ -268,9 +267,9 @@ class ThreadManager extends BaseThreadManager
             ->andWhere('p.id = :user_id')
             ->setParameter('user_id', $participant->getId())
             ->andWhere('tm.isDeleted = :isDeleted')
-            ->setParameter('isDeleted', true, PDO::PARAM_BOOL)
+            ->setParameter('isDeleted', true, \PDO::PARAM_BOOL)
             ->andWhere('tm.isRead = :isRead')
-            ->setParameter('isRead', false, PDO::PARAM_BOOL)
+            ->setParameter('isRead', false, \PDO::PARAM_BOOL)
             ->getQuery()
             ->getSingleScalarResult()
          ;
@@ -333,7 +332,7 @@ class ThreadManager extends BaseThreadManager
             ->andWhere('t.isSpam = :isSpam')
             ->andWhere('t.subject = :subject')
             ->setParameter('subject', $subject)
-            ->setParameter('isSpam', false, PDO::PARAM_BOOL)
+            ->setParameter('isSpam', false, \PDO::PARAM_BOOL)
             ;
     }
 
