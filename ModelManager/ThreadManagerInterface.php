@@ -172,4 +172,16 @@ interface ThreadManagerInterface extends ReadableManagerInterface
      * @return ThreadInterface|null
      */
     public function findSubjectThread($subject);
+
+    public function getParticipantThreadsBySubjectAndRecipients(
+        string $subject,
+        ParticipantInterface $sender,
+        ParticipantInterface $participant
+    ): QueryBuilder;
+
+    public function findParticipantThreadsBySubjectAndRecipients(
+        string $subject,
+        ParticipantInterface $sender,
+        ParticipantInterface $participant
+    ): ?ThreadInterface;
 }

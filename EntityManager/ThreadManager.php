@@ -5,7 +5,9 @@ namespace FOS\MessageBundle\EntityManager;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Exception;
+use FOS\MessageBundle\Entity\Message;
 use FOS\MessageBundle\Model\ParticipantInterface;
 use FOS\MessageBundle\Model\ReadableInterface;
 use FOS\MessageBundle\Model\ThreadInterface;
@@ -74,32 +76,64 @@ class ThreadManager extends BaseThreadManager
         return $this->repository->find($id);
     }
 
+    public function getParticipantThreadsBySubjectAndRecipients(
+        string $subject,
+        ParticipantInterface $sender,
+        ParticipantInterface $participant
+    ): QueryBuilder {
+        $qb = $this->getThreadBySubjectQueryBuilder($subject);
+        $qb
+            ->innerJoin('t.metadata', 'tmSender')
+            ->innerJoin('tmSender.participant', 'pSender')
+            ->innerJoin('t.metadata', 'tm')
+            ->innerJoin('tm.participant', 'p')
+            ->andWhere('tmSender.isDeleted = :isDeleted')
+            ->andWhere('tm.isDeleted = :isDeleted')
+            ->andWhere('pSender.id = :sender_id')
+            ->andWhere('p.id = :participant_id')
+            ->setParameter('sender_id', $sender->getId())
+            ->setParameter('participant_id', $participant->getId())
+            ->setParameter('isDeleted', false, \PDO::PARAM_BOOL)
+        ;
+
+        return $qb;
+    }
+
+    public function findParticipantThreadsBySubjectAndRecipients(
+        string $subject,
+        ParticipantInterface $sender,
+        ParticipantInterface $participant
+    ): ?ThreadInterface {
+        return $this->getParticipantThreadsBySubjectAndRecipients($subject, $sender, $participant)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function getParticipantInboxThreadsQueryBuilder(ParticipantInterface $participant)
     {
-        return $this->repository->createQueryBuilder('t')
-            ->innerJoin('t.metadata', 'tm')
-            ->innerJoin('tm.participant', 'p')
+        $subQueryMessage = $this->em->createQueryBuilder()
+            ->select('max(m2.createdAt)')
+            ->from(Message::class, 'm2')
+            ->innerJoin('m2.thread', 't2')
+            ->where('t2.id = t.id')
+            ->getQuery()->getDQL();
 
-            // the participant is in the thread participants
+        $qb = $this->repository->createQueryBuilder('t');
+
+        return $qb->innerJoin('t.metadata', 'tm')
+            ->innerJoin('tm.participant', 'p')
+            ->leftJoin('t.messages', 'm', 'WITH', $qb->expr()->in('m.createdAt', $subQueryMessage))
+            ->andWhere('t.isSpam = :isSpam')
+            ->setParameter('isSpam', false, \PDO::PARAM_BOOL)
+            ->andWhere('tm.isDeleted = :isDeleted')
+            ->setParameter('isDeleted', false, \PDO::PARAM_BOOL)
             ->andWhere('p.id = :user_id')
             ->setParameter('user_id', $participant->getId())
-
-            // the thread does not contain spam or flood
-            ->andWhere('t.isSpam = :isSpam')
-            ->setParameter('isSpam', false, PDO::PARAM_BOOL)
-
-            // the thread is not deleted by this participant
-            ->andWhere('tm.isDeleted = :isDeleted')
-            ->setParameter('isDeleted', false, PDO::PARAM_BOOL)
-
-            // there is at least one message written by an other participant
-            ->andWhere('tm.lastMessageDate IS NOT NULL')
-
-            // sort by date of last message written by an other participant
-            ->orderBy('tm.lastMessageDate', 'DESC')
+            ->orderBy('m.createdAt', 'DESC')
         ;
     }
 
