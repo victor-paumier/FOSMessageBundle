@@ -13,11 +13,13 @@ interface ReaderInterface
 {
     /**
      * Marks the readable as read by the current authenticated user.
+     * @param ReadableInterface $readable
      */
     public function markAsRead(ReadableInterface $readable);
 
     /**
      * Marks the readable as unread by the current authenticated user.
+     * @param ReadableInterface $readable
      */
     public function markAsUnread(ReadableInterface $readable);
 }

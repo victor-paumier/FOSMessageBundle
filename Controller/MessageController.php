@@ -10,16 +10,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class MessageController extends AbstractController
 {
-    public function __construct(ContainerInterface $container)
-    {
-        $this->setContainer($container);
-    }
-
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
     /**
      * Displays the authenticated participant inbox.
      *

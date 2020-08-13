@@ -42,6 +42,11 @@ interface ProviderInterface
     public function getThread($threadId);
 
     /**
+     * @return bool
+     */
+    public function hasUnreadThreads();
+
+    /**
      * Tells how many unread messages the authenticated participant has.
      *
      * @return int the number of unread messages

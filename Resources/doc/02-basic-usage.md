@@ -64,9 +64,6 @@ $sender = $message->getSender();
 
 // Get the message thread
 $thread = $message->getThread();
-
-// Know if this participant has read this message
-if ($message->isReadByParticipant($participant))
 ```
 
 Compose a message
@@ -114,7 +111,7 @@ You can return the number of unread messages for the authenticated user with::
 
 ```php
 $provider = $container->get('fos_message.provider');
-$provider->getNbUnreadMessages();
+$provider->hasUnreadThreads();
 ```
 
 Will return an integer, the number of unread messages.

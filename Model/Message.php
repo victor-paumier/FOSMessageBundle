@@ -48,19 +48,11 @@ abstract class Message implements MessageInterface
     protected $thread;
 
     /**
-     * Collection of MessageMetadata.
-     *
-     * @var Collection|MessageMetadata[]
-     */
-    protected $metadata;
-
-    /**
      * Constructor.
      */
     public function __construct()
     {
         $this->createdAt = new \DateTime();
-        $this->metadata = new ArrayCollection();
     }
 
     /**
@@ -135,57 +127,5 @@ abstract class Message implements MessageInterface
     public function getTimestamp()
     {
         return $this->getCreatedAt()->getTimestamp();
-    }
-
-    /**
-     * Adds MessageMetadata to the metadata collection.
-     *
-     * @param MessageMetadata $meta
-     */
-    public function addMetadata(MessageMetadata $meta)
-    {
-        $this->metadata->add($meta);
-    }
-
-    /**
-     * Get the MessageMetadata for a participant.
-     *
-     * @param ParticipantInterface $participant
-     *
-     * @return MessageMetadata
-     */
-    public function getMetadataForParticipant(ParticipantInterface $participant)
-    {
-        foreach ($this->metadata as $meta) {
-            if ($meta->getParticipant()->getId() == $participant->getId()) {
-                return $meta;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isReadByParticipant(ParticipantInterface $participant)
-    {
-        if ($meta = $this->getMetadataForParticipant($participant)) {
-            return $meta->getIsRead();
-        }
-
-        return false;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setIsReadByParticipant(ParticipantInterface $participant, $isRead)
-    {
-        if (!$meta = $this->getMetadataForParticipant($participant)) {
-            throw new \InvalidArgumentException(sprintf('No metadata exists for participant with id "%s"', $participant->getId()));
-        }
-
-        $meta->setIsRead($isRead);
     }
 }

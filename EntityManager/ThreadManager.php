@@ -3,6 +3,7 @@
 namespace FOS\MessageBundle\EntityManager;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\Persistence\ObjectRepository;
 use FOS\MessageBundle\Model\ParticipantInterface;
 use FOS\MessageBundle\Model\ReadableInterface;
 use FOS\MessageBundle\Model\ThreadInterface;
@@ -21,7 +22,7 @@ class ThreadManager extends BaseThreadManager
     protected $em;
 
     /**
-     * @var DocumentRepository
+     * @var ObjectRepository
      */
     protected $repository;
 
@@ -221,9 +222,29 @@ class ThreadManager extends BaseThreadManager
     /**
      * {@inheritdoc}
      */
+    public function hasUnreadThreads(ParticipantInterface $participant)
+    {
+        return 0 < $this->repository->createQueryBuilder('t')
+            ->count()
+            ->innerJoin('t.metadata', 'tm')
+            ->innerJoin('tm.participant', 'p')
+            ->andWhere('p.id = :user_id')
+            ->setParameter('user_id', $participant->getId())
+            ->andWhere('tm.isDeleted = :isDeleted')
+            ->setParameter('isDeleted', true, \PDO::PARAM_BOOL)
+            ->andWhere('tm.isRead = :isRead')
+            ->setParameter('isRead', false, \PDO::PARAM_BOOL)
+            ->getQuery()
+            ->getSingleScalarResult()
+         ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function markAsReadByParticipant(ReadableInterface $readable, ParticipantInterface $participant)
     {
-        return $this->messageManager->markIsReadByThreadAndParticipant($readable, $participant, true);
+        $readable->setIsReadByParticipant($participant, true);
     }
 
     /**
@@ -231,7 +252,7 @@ class ThreadManager extends BaseThreadManager
      */
     public function markAsUnreadByParticipant(ReadableInterface $readable, ParticipantInterface $participant)
     {
-        return $this->messageManager->markIsReadByThreadAndParticipant($readable, $participant, false);
+        $readable->setIsReadByParticipant($participant, false);
     }
 
     /**
@@ -263,6 +284,31 @@ class ThreadManager extends BaseThreadManager
     public function getClass()
     {
         return $this->class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getThreadBySubjectQueryBuilder($subject)
+    {
+        return $this->repository->createQueryBuilder('t')
+            ->distinct()
+            ->andWhere('t.isSpam = :isSpam')
+            ->andWhere('t.subject = :subject')
+            ->setParameter('subject', $subject)
+            ->setParameter('isSpam', false, \PDO::PARAM_BOOL)
+            ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findSubjectThread($subject)
+    {
+        return $this->getThreadBySubjectQueryBuilder($subject)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
     }
 
     /*

@@ -7,7 +7,6 @@ use FOS\MessageBundle\Util\LegacyFormHelper;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Description of RecipientsType.
@@ -47,11 +46,6 @@ class RecipientsType extends AbstractType
         ));
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $this->configureOptions($resolver);
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -66,13 +60,5 @@ class RecipientsType extends AbstractType
     public function getParent()
     {
         return LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\TextType');
-    }
-
-    /**
-     * @deprecated To remove when supporting only Symfony 3
-     */
-    public function getName()
-    {
-        return $this->getBlockPrefix();
     }
 }

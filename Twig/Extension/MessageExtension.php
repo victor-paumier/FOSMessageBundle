@@ -8,14 +8,15 @@ use FOS\MessageBundle\Model\ThreadInterface;
 use FOS\MessageBundle\Provider\ProviderInterface;
 use FOS\MessageBundle\Security\AuthorizerInterface;
 use FOS\MessageBundle\Security\ParticipantProviderInterface;
+use Twig\Extension\AbstractExtension;
 
-class MessageExtension extends \Twig_Extension
+class MessageExtension extends AbstractExtension
 {
     protected $participantProvider;
     protected $provider;
     protected $authorizer;
 
-    protected $nbUnreadMessagesCache;
+    protected $hasUnreadThreadsCache;
 
     public function __construct(ParticipantProviderInterface $participantProvider, ProviderInterface $provider, AuthorizerInterface $authorizer)
     {
@@ -31,7 +32,7 @@ class MessageExtension extends \Twig_Extension
     {
         return array(
             new \Twig_SimpleFunction('fos_message_is_read', array($this, 'isRead')),
-            new \Twig_SimpleFunction('fos_message_nb_unread', array($this, 'getNbUnread')),
+            new \Twig_SimpleFunction('fos_message_has_unread', array($this, 'hasUnread')),
             new \Twig_SimpleFunction('fos_message_can_delete_thread', array($this, 'canDeleteThread')),
             new \Twig_SimpleFunction('fos_message_deleted_by_participant', array($this, 'isThreadDeletedByParticipant')),
         );
@@ -72,17 +73,17 @@ class MessageExtension extends \Twig_Extension
     }
 
     /**
-     * Gets the number of unread messages for the current user.
+     * Has unread thread for the current user
      *
-     * @return int
+     * @return bool
      */
-    public function getNbUnread()
+    public function hasUnread()
     {
-        if (null === $this->nbUnreadMessagesCache) {
-            $this->nbUnreadMessagesCache = $this->provider->getNbUnreadMessages();
+        if (null === $this->hasUnreadThreadsCache) {
+            $this->hasUnreadThreadsCache = $this->provider->hasUnreadThreads();
         }
 
-        return $this->nbUnreadMessagesCache;
+        return $this->hasUnreadThreadsCache;
     }
 
     /**

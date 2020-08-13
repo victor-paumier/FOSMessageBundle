@@ -18,11 +18,15 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder('fos_message');
-        $rootNode = $treeBuilder->root('fos_message');
+        if (\method_exists($treeBuilder, 'getRootNode')) {
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $rootNode = $treeBuilder->root('fos_message');
+        }
 
         $rootNode
             ->children()
-                ->scalarNode('db_driver')->cannotBeOverwritten()->isRequired()->cannotBeEmpty()->end()
                 ->scalarNode('thread_class')->isRequired()->cannotBeEmpty()->end()
                 ->scalarNode('message_class')->isRequired()->cannotBeEmpty()->end()
                 ->scalarNode('message_manager')->defaultValue('fos_message.message_manager.default')->cannotBeEmpty()->end()
@@ -32,7 +36,6 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('provider')->defaultValue('fos_message.provider.default')->cannotBeEmpty()->end()
                 ->scalarNode('participant_provider')->defaultValue('fos_message.participant_provider.default')->cannotBeEmpty()->end()
                 ->scalarNode('authorizer')->defaultValue('fos_message.authorizer.default')->cannotBeEmpty()->end()
-                ->scalarNode('message_reader')->defaultValue('fos_message.message_reader.default')->cannotBeEmpty()->end()
                 ->scalarNode('thread_reader')->defaultValue('fos_message.thread_reader.default')->cannotBeEmpty()->end()
                 ->scalarNode('deleter')->defaultValue('fos_message.deleter.default')->cannotBeEmpty()->end()
                 ->scalarNode('spam_detector')->defaultValue('fos_message.noop_spam_detector')->cannotBeEmpty()->end()

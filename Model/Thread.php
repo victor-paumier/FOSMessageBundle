@@ -228,10 +228,8 @@ abstract class Thread implements ThreadInterface
      */
     public function isReadByParticipant(ParticipantInterface $participant)
     {
-        foreach ($this->getMessages() as $message) {
-            if (!$message->isReadByParticipant($participant)) {
-                return false;
-            }
+        if ($meta = $this->getMetadataForParticipant($participant)) {
+            return $meta->getIsRead();
         }
 
         return true;
@@ -242,8 +240,8 @@ abstract class Thread implements ThreadInterface
      */
     public function setIsReadByParticipant(ParticipantInterface $participant, $isRead)
     {
-        foreach ($this->getMessages() as $message) {
-            $message->setIsReadByParticipant($participant, $isRead);
+        if ($meta = $this->getMetadataForParticipant($participant)) {
+            $meta->setIsRead($isRead);
         }
     }
 

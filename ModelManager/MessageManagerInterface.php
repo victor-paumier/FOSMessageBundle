@@ -3,7 +3,6 @@
 namespace FOS\MessageBundle\ModelManager;
 
 use FOS\MessageBundle\Model\MessageInterface;
-use FOS\MessageBundle\Model\ParticipantInterface;
 
 /**
  * Interface to be implemented by message managers. This adds an additional level
@@ -13,17 +12,8 @@ use FOS\MessageBundle\Model\ParticipantInterface;
  *
  * @author Thibault Duplessis <thibault.duplessis@gmail.com>
  */
-interface MessageManagerInterface extends ReadableManagerInterface
+interface MessageManagerInterface
 {
-    /**
-     * Tells how many unread, non-spam, messages this participant has.
-     *
-     * @param ParticipantInterface $participant
-     *
-     * @return int the number of unread messages
-     */
-    public function getNbUnreadMessageByParticipant(ParticipantInterface $participant);
-
     /**
      * Creates an empty message instance.
      *

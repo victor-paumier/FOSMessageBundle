@@ -145,4 +145,30 @@ interface ThreadManagerInterface extends ReadableManagerInterface
      * @param ThreadInterface $thread the thread to delete
      */
     public function deleteThread(ThreadInterface $thread);
+
+    /**
+     * Check if participant has unreadThread
+     *
+     * @param ParticipantInterface $participant
+     * @return bool
+     */
+    public function hasUnreadThreads(ParticipantInterface $participant);
+
+    /**
+     * Find thread by subject
+     *
+     * @param string $subject
+     *
+     * @return Builder a query builder
+     */
+    public function getThreadBySubjectQueryBuilder($subject);
+
+    /**
+     * Get thread by subject
+     *
+     * @param string $subject
+     *
+     * @return ThreadInterface|null
+     */
+    public function findSubjectThread($subject);
 }

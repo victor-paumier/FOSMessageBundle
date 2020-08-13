@@ -3,6 +3,7 @@
 namespace FOS\MessageBundle\Provider;
 
 use FOS\MessageBundle\Model\ParticipantInterface;
+use FOS\MessageBundle\Model\ThreadInterface;
 use FOS\MessageBundle\ModelManager\MessageManagerInterface;
 use FOS\MessageBundle\ModelManager\ThreadManagerInterface;
 use FOS\MessageBundle\Reader\ReaderInterface;
@@ -73,6 +74,15 @@ class Provider implements ProviderInterface
     }
 
     /**
+     * @param $subject
+     * @return ThreadInterface|null
+     */
+    public function getThreadBySubject($subject)
+    {
+        return $this->threadManager->findSubjectThread($subject);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getSentThreads()
@@ -113,11 +123,13 @@ class Provider implements ProviderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return bool
      */
-    public function getNbUnreadMessages()
+    public function hasUnreadThreads()
     {
-        return $this->messageManager->getNbUnreadMessageByParticipant($this->getAuthenticatedParticipant());
+        $participant = $this->getAuthenticatedParticipant();
+
+        return $this->threadManager->hasUnreadThreads($participant);
     }
 
     /**

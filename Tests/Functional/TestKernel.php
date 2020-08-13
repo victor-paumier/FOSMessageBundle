@@ -17,7 +17,7 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
-use Symfony\Component\Routing\RouteCollectionBuilder;
+use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
 /**
  * @author Guilhem N. <guilhem.niot@gmail.com>
@@ -44,7 +44,7 @@ class TestKernel extends Kernel
     /**
      * {@inheritdoc}
      */
-    protected function configureRoutes(RouteCollectionBuilder $routes)
+    protected function configureRoutes(RoutingConfigurator $routes)
     {
         $routes->import('@FOSMessageBundle/Resources/config/routing.xml');
     }

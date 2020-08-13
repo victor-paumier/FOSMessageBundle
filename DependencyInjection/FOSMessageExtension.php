@@ -21,11 +21,7 @@ class FOSMessageExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
-        if (!in_array(strtolower($config['db_driver']), array('orm', 'mongodb'))) {
-            throw new \InvalidArgumentException(sprintf('Invalid db driver "%s".', $config['db_driver']));
-        }
-
-        $loader->load(sprintf('%s.xml', $config['db_driver']));
+        $loader->load('orm.xml');
         $loader->load('config.xml');
         $loader->load('form.xml');
         $loader->load('validator.xml');
@@ -47,7 +43,6 @@ class FOSMessageExtension extends Extension
         $container->setAlias('fos_message.provider', new Alias($config['provider'], true));
         $container->setAlias('fos_message.participant_provider', new Alias($config['participant_provider'], true));
         $container->setAlias('fos_message.authorizer', new Alias($config['authorizer'], true));
-        $container->setAlias('fos_message.message_reader', new Alias($config['message_reader'], true));
         $container->setAlias('fos_message.thread_reader', new Alias($config['thread_reader'], true));
         $container->setAlias('fos_message.deleter', new Alias($config['deleter'], true));
         $container->setAlias('fos_message.spam_detector', new Alias($config['spam_detector'], true));

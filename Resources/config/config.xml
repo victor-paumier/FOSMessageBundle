@@ -40,12 +40,6 @@
             <argument type="service" id="fos_message.participant_provider" />
         </service>
 
-        <service id="fos_message.message_reader.default" class="FOS\MessageBundle\Reader\Reader" public="false">
-            <argument type="service" id="fos_message.participant_provider" />
-            <argument type="service" id="fos_message.message_manager" />
-            <argument type="service" id="event_dispatcher" />
-        </service>
-
         <service id="fos_message.thread_reader.default" class="FOS\MessageBundle\Reader\Reader" public="false">
             <argument type="service" id="fos_message.participant_provider" />
             <argument type="service" id="fos_message.thread_manager" />

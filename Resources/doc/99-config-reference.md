@@ -7,7 +7,6 @@ All configuration options are listed below::
 # app/config/config.yml
 
 fos_message:
-    db_driver:              orm
     thread_class:           AppBundle\Entity\Thread
     message_class:          AppBundle\Entity\Message
     message_manager:        fos_message.message_manager         # See ModelManager\MessageManagerInterface
@@ -16,8 +15,7 @@ fos_message:
     composer:               fos_message.composer                # See Composer\ComposerInterface
     provider:               fos_message.provider                # See Provider\ProviderInterface
     participant_provider:   fos_message.participant_provider    # See Security\ParticipantProviderInterface
-    authorizer:             fos_message.authorizer              # See Security\AuthorizerInterface
-    message_reader:         fos_message.message_reader          # See Reader\ReaderInterface
+    authorizer:             fos_message.authorizer              # See Reader\ReaderInterface
     thread_reader:          fos_message.thread_reader           # See Reader\ReaderInterface
     deleter:                fos_message.deleter                 # See Deleter\DeleterInterface
     spam_detector:          fos_message.noop_spam_detector      # See SpamDetection\SpamDetectorInterface

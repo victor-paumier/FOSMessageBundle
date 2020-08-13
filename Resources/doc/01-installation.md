@@ -13,13 +13,7 @@ be achieved by typing the following at the command prompt:
 #### Current
 
 ```bash
-composer require friendsofsymfony/message-bundle
-```
-
-#### v1.3 (Legacy: Symfony 2, or <=3.3)
-
-```bash
-composer require friendsofsymfony/message-bundle:1.3.0
+composer require vpaumier/message-bundle
 ```
 
 ### Step 2 - Setting up your user class
@@ -51,16 +45,15 @@ class User extends BaseUser implements ParticipantInterface
 FOSMessageBundle has multiple models that must be implemented by you in an application
 bundle (that may or may not be a child of FOSMessageBundle).
 
-We provide examples for both Mongo DB and ORM.
+We provide examples for ORM.
 
 - [Example entities for Doctrine ORM][]
-- [Example documents for Doctrine ODM][]
 
 ### Step 4 - Enable the bundle in your kernel
 
 The bundle must be added to your `AppKernel`.
 
-**Step usually not necescary in Symfony 4**.
+**Step usually not necessary in Symfony 4**.
 
 ```php
 // app/AppKernel.php

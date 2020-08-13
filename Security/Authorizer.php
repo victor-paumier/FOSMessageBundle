@@ -27,7 +27,10 @@ class Authorizer implements AuthorizerInterface
      */
     public function canSeeThread(ThreadInterface $thread)
     {
-        return $this->getAuthenticatedParticipant() && $thread->isParticipant($this->getAuthenticatedParticipant());
+        return $this->getAuthenticatedParticipant() &&
+            $thread->isParticipant($this->getAuthenticatedParticipant()) &&
+            !$thread->isDeletedByParticipant($this->getAuthenticatedParticipant())
+        ;
     }
 
     /**

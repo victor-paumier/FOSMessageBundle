@@ -6,6 +6,7 @@ abstract class ThreadMetadata
 {
     protected $participant;
     protected $isDeleted = false;
+    protected $isRead = false;
 
     /**
      * Date of last message written by the participant.
@@ -48,6 +49,22 @@ abstract class ThreadMetadata
     public function setIsDeleted($isDeleted)
     {
         $this->isDeleted = (bool) $isDeleted;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsRead()
+    {
+        return $this->isRead;
+    }
+
+    /**
+     * @param bool $isRead
+     */
+    public function setIsRead($isRead)
+    {
+        $this->isRead = (bool) $isRead;
     }
 
     /**
