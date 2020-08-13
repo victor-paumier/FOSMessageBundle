@@ -9,7 +9,7 @@ use DateTime;
  *
  * @author Thibault Duplessis <thibault.duplessis@gmail.com>
  */
-interface MessageInterface extends ReadableInterface
+interface MessageInterface
 {
     /**
      * Gets the message unique id.

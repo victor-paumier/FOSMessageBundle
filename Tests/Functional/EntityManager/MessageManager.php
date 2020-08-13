@@ -3,9 +3,6 @@
 namespace FOS\MessageBundle\Tests\Functional\EntityManager;
 
 use FOS\MessageBundle\Model\MessageInterface;
-use FOS\MessageBundle\Model\ParticipantInterface;
-use FOS\MessageBundle\Model\ReadableInterface;
-use FOS\MessageBundle\Model\ThreadInterface;
 use FOS\MessageBundle\ModelManager\MessageManager as BaseMessageManager;
 use FOS\MessageBundle\Tests\Functional\Entity\Message;
 

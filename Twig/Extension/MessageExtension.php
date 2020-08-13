@@ -40,7 +40,7 @@ class MessageExtension extends AbstractExtension
     }
 
     /**
-     * Tells if this readable (thread or message) is read by the current user.
+     * Tells if this readable (thread) is read by the current user.
      *
      * @param ReadableInterface $readable
      *
