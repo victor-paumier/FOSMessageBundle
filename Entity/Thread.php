@@ -45,6 +45,8 @@ abstract class Thread extends BaseThread
     protected $keywords = '';
 
     /**
+     * @ORM\Column(name="subject", type="string", nullable=false)
+     *
      * @var string
      */
     protected $subject;
@@ -65,6 +67,8 @@ abstract class Thread extends BaseThread
 
     /**
      * Date this thread was created at.
+     *
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      *
      * @var DateTime
      */
