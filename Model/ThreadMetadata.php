@@ -2,6 +2,8 @@
 
 namespace FOS\MessageBundle\Model;
 
+use DateTime;
+
 abstract class ThreadMetadata
 {
     protected $participant;
@@ -11,14 +13,14 @@ abstract class ThreadMetadata
     /**
      * Date of last message written by the participant.
      *
-     * @var \DateTime
+     * @var DateTime
      */
     protected $lastParticipantMessageDate;
 
     /**
      * Date of last message written by another participant.
      *
-     * @var \DateTime
+     * @var DateTime
      */
     protected $lastMessageDate;
 
@@ -68,27 +70,27 @@ abstract class ThreadMetadata
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getLastParticipantMessageDate()
     {
         return $this->lastParticipantMessageDate;
     }
 
-    public function setLastParticipantMessageDate(\DateTime $date)
+    public function setLastParticipantMessageDate(DateTime $date)
     {
         $this->lastParticipantMessageDate = $date;
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getLastMessageDate()
     {
         return $this->lastMessageDate;
     }
 
-    public function setLastMessageDate(\DateTime $date)
+    public function setLastMessageDate(DateTime $date)
     {
         $this->lastMessageDate = $date;
     }

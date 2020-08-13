@@ -49,7 +49,7 @@ class Deleter implements DeleterInterface
     /**
      * {@inheritdoc}
      */
-    public function markAsDeleted(ThreadInterface $thread)
+    public function markAsDeleted(ThreadInterface $thread): void
     {
         if (!$this->authorizer->canDeleteThread($thread)) {
             throw new AccessDeniedException('You are not allowed to delete this thread');
@@ -62,7 +62,7 @@ class Deleter implements DeleterInterface
     /**
      * {@inheritdoc}
      */
-    public function markAsUndeleted(ThreadInterface $thread)
+    public function markAsUndeleted(ThreadInterface $thread): void
     {
         if (!$this->authorizer->canDeleteThread($thread)) {
             throw new AccessDeniedException('You are not allowed to delete this thread');

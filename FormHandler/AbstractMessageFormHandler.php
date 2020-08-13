@@ -10,7 +10,6 @@ use FOS\MessageBundle\Security\ParticipantProviderInterface;
 use FOS\MessageBundle\Sender\SenderInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Handles messages forms, from binding request to sending the message.
@@ -19,26 +18,17 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 abstract class AbstractMessageFormHandler
 {
-    protected $request;
     protected $composer;
     protected $sender;
     protected $participantProvider;
 
     /**
-     * @param Request|RequestStack         $request
      * @param ComposerInterface            $composer
      * @param SenderInterface              $sender
      * @param ParticipantProviderInterface $participantProvider
      */
-    public function __construct($request, ComposerInterface $composer, SenderInterface $sender, ParticipantProviderInterface $participantProvider)
+    public function __construct(ComposerInterface $composer, SenderInterface $sender, ParticipantProviderInterface $participantProvider)
     {
-        if ($request instanceof Request) {
-            @trigger_error(sprintf('Using an instance of "%s" as first parameter of "%s" is deprecated since version 1.3 and won\'t be supported in 2.0. Use an instance of "Symfony\Component\HttpFoundation\RequestStack" instead.', get_class($request), __METHOD__), E_USER_DEPRECATED);
-        } elseif (!$request instanceof RequestStack) {
-            throw new \InvalidArgumentException(sprintf('AbstractMessageFormHandler expected a Request or RequestStack, %s given', is_object($request) ? get_class($request) : gettype($request)));
-        }
-
-        $this->request = $request;
         $this->composer = $composer;
         $this->sender = $sender;
         $this->participantProvider = $participantProvider;
@@ -48,13 +38,12 @@ abstract class AbstractMessageFormHandler
      * Processes the form with the request.
      *
      * @param Form $form
+     * @param Request $request
      *
      * @return MessageInterface|false the sent message if the form is bound and valid, false otherwise
      */
-    public function process(Form $form)
+    public function process(Form $form, Request $request)
     {
-        $request = $this->getCurrentRequest();
-
         if ('POST' !== $request->getMethod()) {
             return false;
         }
@@ -62,25 +51,13 @@ abstract class AbstractMessageFormHandler
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            return $this->processValidForm($form);
+            $message = $this->composeMessage($form->getData());
+            $this->sender->send($message);
+
+            return $message;
         }
 
         return false;
-    }
-
-    /**
-     * Processes the valid form, sends the message.
-     *
-     * @param Form $form
-     *
-     * @return MessageInterface the sent message
-     */
-    public function processValidForm(Form $form)
-    {
-        $message = $this->composeMessage($form->getData());
-        $this->sender->send($message);
-
-        return $message;
     }
 
     /**
@@ -100,27 +77,5 @@ abstract class AbstractMessageFormHandler
     protected function getAuthenticatedParticipant()
     {
         return $this->participantProvider->getAuthenticatedParticipant();
-    }
-
-    /**
-     * BC layer to retrieve the current request directly or from a stack.
-     *
-     * @return Request
-     */
-    private function getCurrentRequest()
-    {
-        if (!$this->request) {
-            throw new \RuntimeException('Current request was not provided to the form handler.');
-        }
-
-        if ($this->request instanceof Request) {
-            return $this->request;
-        }
-
-        if (!$this->request->getCurrentRequest()) {
-            throw new \RuntimeException('Request stack provided to the form handler did not contains a current request.');
-        }
-
-        return $this->request->getCurrentRequest();
     }
 }

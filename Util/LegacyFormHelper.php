@@ -2,6 +2,15 @@
 
 namespace FOS\MessageBundle\Util;
 
+use FOS\MessageBundle\FormType\RecipientsType;
+use InvalidArgumentException;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+
 /**
  * @internal
  *
@@ -11,15 +20,15 @@ namespace FOS\MessageBundle\Util;
  */
 final class LegacyFormHelper
 {
-    private static $map = array(
+    private static $map = [
         'FOS\UserBundle\Form\Type\UsernameFormType' => 'fos_user_username',
-        'FOS\MessageBundle\FormType\RecipientsType' => 'recipients_selector',
-        'Symfony\Component\Form\Extension\Core\Type\EmailType' => 'email',
-        'Symfony\Component\Form\Extension\Core\Type\PasswordType' => 'password',
-        'Symfony\Component\Form\Extension\Core\Type\RepeatedType' => 'repeated',
-        'Symfony\Component\Form\Extension\Core\Type\TextType' => 'text',
-        'Symfony\Component\Form\Extension\Core\Type\TextareaType' => 'textarea',
-    );
+        RecipientsType::class => 'recipients_selector',
+        EmailType::class => 'email',
+        PasswordType::class => 'password',
+        RepeatedType::class => 'repeated',
+        TextType::class => 'text',
+        TextareaType::class => 'textarea',
+    ];
 
     public static function getType($class)
     {
@@ -28,7 +37,7 @@ final class LegacyFormHelper
         }
 
         if (!isset(self::$map[$class])) {
-            throw new \InvalidArgumentException(sprintf('Form type with class "%s" can not be found. Please check for typos or add it to the map in LegacyFormHelper', $class));
+            throw new InvalidArgumentException(sprintf('Form type with class "%s" can not be found. Please check for typos or add it to the map in LegacyFormHelper', $class));
         }
 
         return self::$map[$class];
@@ -36,7 +45,7 @@ final class LegacyFormHelper
 
     public static function isLegacy()
     {
-        return !method_exists('Symfony\Component\Form\AbstractType', 'getBlockPrefix');
+        return !method_exists(AbstractType::class, 'getBlockPrefix');
     }
 
     private function __construct()

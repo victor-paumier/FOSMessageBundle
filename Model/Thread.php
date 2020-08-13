@@ -2,8 +2,10 @@
 
 namespace FOS\MessageBundle\Model;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use InvalidArgumentException;
 
 /**
  * Abstract thread model.
@@ -57,7 +59,7 @@ abstract class Thread implements ThreadInterface
     /**
      * Date this thread was created at.
      *
-     * @var \DateTime
+     * @var DateTime
      */
     protected $createdAt;
 
@@ -97,7 +99,7 @@ abstract class Thread implements ThreadInterface
     /**
      * {@inheritdoc}
      */
-    public function setCreatedAt(\DateTime $createdAt)
+    public function setCreatedAt(DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
     }
@@ -200,7 +202,7 @@ abstract class Thread implements ThreadInterface
     public function setIsDeletedByParticipant(ParticipantInterface $participant, $isDeleted)
     {
         if (!$meta = $this->getMetadataForParticipant($participant)) {
-            throw new \InvalidArgumentException(sprintf('No metadata exists for participant with id "%s"', $participant->getId()));
+            throw new InvalidArgumentException(sprintf('No metadata exists for participant with id "%s"', $participant->getId()));
         }
 
         $meta->setIsDeleted($isDeleted);
@@ -265,7 +267,7 @@ abstract class Thread implements ThreadInterface
     public function getMetadataForParticipant(ParticipantInterface $participant)
     {
         foreach ($this->metadata as $meta) {
-            if ($meta->getParticipant()->getId() == $participant->getId()) {
+            if ($meta->getParticipant()->getId() === $participant->getId()) {
                 return $meta;
             }
         }

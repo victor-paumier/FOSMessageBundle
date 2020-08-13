@@ -1,0 +1,65 @@
+services:
+  fos_message.new_thread_form.type.default:
+    class: FOS\MessageBundle\FormType\NewThreadMessageFormType
+    public: false
+
+  fos_message.new_thread_multiple_form.type:
+    class: FOS\MessageBundle\FormType\NewThreadMultipleMessageFormType
+    public: false
+
+  fos_message.reply_form.type.default:
+    class: FOS\MessageBundle\FormType\ReplyMessageFormType
+    public: false
+
+  fos_message.new_thread_form.factory.default:
+    class: FOS\MessageBundle\FormFactory\NewThreadMessageFormFactory
+    public: false
+    arguments:
+      - '@form.factory'
+      - '@fos_message.new_thread_form.type'
+      - '%fos_message.new_thread_form.name%'
+      - '%fos_message.new_thread_form.model%'
+
+  fos_message.reply_form.factory.default:
+    class: FOS\MessageBundle\FormFactory\ReplyMessageFormFactory
+    public: false
+    arguments:
+      - '@form.factory'
+      - '@fos_message.reply_form.type'
+      - '%fos_message.reply_form.name%'
+      - '%fos_message.reply_form.model%'
+
+  fos_message.new_thread_form.handler.default:
+    class: FOS\MessageBundle\FormHandler\NewThreadMessageFormHandler
+    public: false
+    arguments:
+      - '@fos_message.composer'
+      - '@fos_message.sender'
+      - '@fos_message.participant_provider'
+
+  fos_message.new_thread_multiple_form.handler:
+    class: FOS\MessageBundle\FormHandler\NewThreadMultipleMessageFormHandler
+    public: false
+    arguments:
+      - '@fos_message.composer'
+      - '@fos_message.sender'
+      - '@fos_message.participant_provider'
+
+  fos_message.reply_form.handler.default:
+    class: FOS\MessageBundle\FormHandler\ReplyMessageFormHandler
+    public: false
+    arguments:
+      - '@fos_message.composer'
+      - '@fos_message.sender'
+      - '@fos_message.participant_provider'
+
+  fos_message.recipients_data_transformer:
+    class: FOS\MessageBundle\DataTransformer\RecipientsDataTransformer
+    public: false
+    arguments: ['@fos_user.user_to_username_transformer']
+
+  fos_message.recipients_selector:
+    class: FOS\MessageBundle\FormType\RecipientsType
+    tags:
+      - { name: form.type, alias: recipients_selector }
+    arguments: ['@fos_message.recipients_data_transformer']

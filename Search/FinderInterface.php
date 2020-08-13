@@ -2,6 +2,7 @@
 
 namespace FOS\MessageBundle\Search;
 
+use Doctrine\ORM\QueryBuilder;
 use FOS\MessageBundle\Model\ThreadInterface;
 
 /**
@@ -25,7 +26,7 @@ interface FinderInterface
      *
      * @param Query $query
      *
-     * @return Builder a query builder suitable for pagination
+     * @return QueryBuilder a query builder suitable for pagination
      */
     public function getQueryBuilder(Query $query);
 }

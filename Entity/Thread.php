@@ -2,12 +2,16 @@
 
 namespace FOS\MessageBundle\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 use FOS\MessageBundle\Model\MessageInterface;
 use FOS\MessageBundle\Model\ParticipantInterface;
 use FOS\MessageBundle\Model\Thread as BaseThread;
 use FOS\MessageBundle\Model\ThreadMetadata as ModelThreadMetadata;
+use InvalidArgumentException;
+use Traversable;
 
 abstract class Thread extends BaseThread
 {
@@ -41,6 +45,18 @@ abstract class Thread extends BaseThread
     protected $keywords = '';
 
     /**
+     * @var string
+     */
+    protected $subject;
+
+    /**
+     * @ORM\Column(name="is_spam", type="boolean", nullable=false)
+     *
+     * @var bool
+     */
+     protected $isSpam = false;
+
+    /**
      * Participant that created the thread.
      *
      * @var ParticipantInterface
@@ -50,7 +66,7 @@ abstract class Thread extends BaseThread
     /**
      * Date this thread was created at.
      *
-     * @var \DateTime
+     * @var DateTime
      */
     protected $createdAt;
 
@@ -96,16 +112,16 @@ abstract class Thread extends BaseThread
     /**
      * Adds many participants to the thread.
      *
-     * @param array|\Traversable
-     *
-     * @throws \InvalidArgumentException
+     * @param array|Traversable
      *
      * @return Thread
+     *@throws InvalidArgumentException
+     *
      */
     public function addParticipants($participants)
     {
-        if (!is_array($participants) && !$participants instanceof \Traversable) {
-            throw new \InvalidArgumentException('Participants must be an array or instance of Traversable');
+        if (!is_array($participants) && !$participants instanceof Traversable) {
+            throw new InvalidArgumentException('Participants must be an array or instance of Traversable');
         }
 
         foreach ($participants as $participant) {

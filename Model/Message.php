@@ -2,8 +2,7 @@
 
 namespace FOS\MessageBundle\Model;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use DateTime;
 
 /**
  * Abstract message model.
@@ -36,7 +35,7 @@ abstract class Message implements MessageInterface
     /**
      * Date when the message was sent.
      *
-     * @var \DateTime
+     * @var DateTime
      */
     protected $createdAt;
 
@@ -52,7 +51,7 @@ abstract class Message implements MessageInterface
      */
     public function __construct()
     {
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new DateTime();
     }
 
     /**

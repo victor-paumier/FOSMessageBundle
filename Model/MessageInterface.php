@@ -2,6 +2,8 @@
 
 namespace FOS\MessageBundle\Model;
 
+use DateTime;
+
 /**
  * Message model.
  *
@@ -27,7 +29,7 @@ interface MessageInterface extends ReadableInterface
     public function setThread(ThreadInterface $thread);
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreatedAt();
 

@@ -9,6 +9,7 @@ use FOS\MessageBundle\Provider\ProviderInterface;
 use FOS\MessageBundle\Security\AuthorizerInterface;
 use FOS\MessageBundle\Security\ParticipantProviderInterface;
 use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 
 class MessageExtension extends AbstractExtension
 {
@@ -31,15 +32,17 @@ class MessageExtension extends AbstractExtension
     public function getFunctions()
     {
         return array(
-            new \Twig_SimpleFunction('fos_message_is_read', array($this, 'isRead')),
-            new \Twig_SimpleFunction('fos_message_has_unread', array($this, 'hasUnread')),
-            new \Twig_SimpleFunction('fos_message_can_delete_thread', array($this, 'canDeleteThread')),
-            new \Twig_SimpleFunction('fos_message_deleted_by_participant', array($this, 'isThreadDeletedByParticipant')),
+            new TwigFilter('fos_message_is_read', [$this, 'isRead']),
+            new TwigFilter('fos_message_has_unread', [$this, 'hasUnread']),
+            new TwigFilter('fos_message_can_delete_thread', [$this, 'canDeleteThread']),
+            new TwigFilter('fos_message_deleted_by_participant', [$this, 'isThreadDeletedByParticipant']),
         );
     }
 
     /**
      * Tells if this readable (thread or message) is read by the current user.
+     *
+     * @param ReadableInterface $readable
      *
      * @return bool
      */
@@ -96,9 +99,6 @@ class MessageExtension extends AbstractExtension
         return $this->participantProvider->getAuthenticatedParticipant();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getName()
     {
         return 'fos_message';

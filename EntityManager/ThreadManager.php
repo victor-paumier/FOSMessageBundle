@@ -2,12 +2,15 @@
 
 namespace FOS\MessageBundle\EntityManager;
 
+use DateTime;
 use Doctrine\ORM\EntityManager;
-use Doctrine\Persistence\ObjectRepository;
+use Doctrine\ORM\EntityRepository;
+use Exception;
 use FOS\MessageBundle\Model\ParticipantInterface;
 use FOS\MessageBundle\Model\ReadableInterface;
 use FOS\MessageBundle\Model\ThreadInterface;
 use FOS\MessageBundle\ModelManager\ThreadManager as BaseThreadManager;
+use PDO;
 
 /**
  * Default ORM ThreadManager.
@@ -22,7 +25,7 @@ class ThreadManager extends BaseThreadManager
     protected $em;
 
     /**
-     * @var ObjectRepository
+     * @var EntityRepository
      */
     protected $repository;
 
@@ -54,7 +57,7 @@ class ThreadManager extends BaseThreadManager
      * @param string         $metaClass
      * @param MessageManager $messageManager
      */
-    public function __construct(EntityManager $em, $class, $metaClass, MessageManager $messageManager)
+    public function __construct(EntityManager $em, string $class, string $metaClass, MessageManager $messageManager)
     {
         $this->em = $em;
         $this->repository = $em->getRepository($class);
@@ -86,11 +89,11 @@ class ThreadManager extends BaseThreadManager
 
             // the thread does not contain spam or flood
             ->andWhere('t.isSpam = :isSpam')
-            ->setParameter('isSpam', false, \PDO::PARAM_BOOL)
+            ->setParameter('isSpam', false, PDO::PARAM_BOOL)
 
             // the thread is not deleted by this participant
             ->andWhere('tm.isDeleted = :isDeleted')
-            ->setParameter('isDeleted', false, \PDO::PARAM_BOOL)
+            ->setParameter('isDeleted', false, PDO::PARAM_BOOL)
 
             // there is at least one message written by an other participant
             ->andWhere('tm.lastMessageDate IS NOT NULL')
@@ -125,11 +128,11 @@ class ThreadManager extends BaseThreadManager
 
             // the thread does not contain spam or flood
             ->andWhere('t.isSpam = :isSpam')
-            ->setParameter('isSpam', false, \PDO::PARAM_BOOL)
+            ->setParameter('isSpam', false, PDO::PARAM_BOOL)
 
             // the thread is not deleted by this participant
             ->andWhere('tm.isDeleted = :isDeleted')
-            ->setParameter('isDeleted', false, \PDO::PARAM_BOOL)
+            ->setParameter('isDeleted', false, PDO::PARAM_BOOL)
 
             // there is at least one message written by this participant
             ->andWhere('tm.lastParticipantMessageDate IS NOT NULL')
@@ -164,7 +167,7 @@ class ThreadManager extends BaseThreadManager
 
             // the thread is deleted by this participant
             ->andWhere('tm.isDeleted = :isDeleted')
-            ->setParameter('isDeleted', true, \PDO::PARAM_BOOL)
+            ->setParameter('isDeleted', true, PDO::PARAM_BOOL)
 
             // sort by date of last message
             ->orderBy('tm.lastMessageDate', 'DESC')
@@ -191,7 +194,7 @@ class ThreadManager extends BaseThreadManager
         // build a regex like (term1|term2)
         $regex = sprintf('/(%s)/', implode('|', explode(' ', $search)));
 
-        throw new \Exception('not yet implemented');
+        throw new Exception('not yet implemented');
     }
 
     /**
@@ -231,9 +234,9 @@ class ThreadManager extends BaseThreadManager
             ->andWhere('p.id = :user_id')
             ->setParameter('user_id', $participant->getId())
             ->andWhere('tm.isDeleted = :isDeleted')
-            ->setParameter('isDeleted', true, \PDO::PARAM_BOOL)
+            ->setParameter('isDeleted', true, PDO::PARAM_BOOL)
             ->andWhere('tm.isRead = :isRead')
-            ->setParameter('isRead', false, \PDO::PARAM_BOOL)
+            ->setParameter('isRead', false, PDO::PARAM_BOOL)
             ->getQuery()
             ->getSingleScalarResult()
          ;
@@ -296,7 +299,7 @@ class ThreadManager extends BaseThreadManager
             ->andWhere('t.isSpam = :isSpam')
             ->andWhere('t.subject = :subject')
             ->setParameter('subject', $subject)
-            ->setParameter('isSpam', false, \PDO::PARAM_BOOL)
+            ->setParameter('isSpam', false, PDO::PARAM_BOOL)
             ;
     }
 
@@ -389,7 +392,7 @@ class ThreadManager extends BaseThreadManager
                 }
             }
             if ($timestamp) {
-                $date = new \DateTime();
+                $date = new DateTime();
                 $date->setTimestamp($timestamp);
                 $meta->setLastMessageDate($date);
             }

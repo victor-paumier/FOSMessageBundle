@@ -1,0 +1,60 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  fos_message.sender.default:
+    class: FOS\MessageBundle\Sender\Sender
+    public: false
+    arguments: ['@fos_message.message_manager', '@fos_message.thread_manager', '@event_dispatcher']
+
+  fos_message.composer.default:
+    class: FOS\MessageBundle\Composer\Composer
+    public: false
+    arguments: ['@fos_message.message_manager', '@fos_message.thread_manager']
+
+  fos_message.participant_provider.default:
+    class: FOS\MessageBundle\Security\ParticipantProvider
+    public: false
+    arguments: ['@security.token_storage']
+
+  fos_message.authorizer.default:
+    class: FOS\MessageBundle\Security\Authorizer
+    public: false
+    arguments: ['@fos_message.participant_provider']
+
+  fos_message.provider.default:
+    class: FOS\MessageBundle\Provider\Provider
+    public: false
+    arguments: ['@fos_message.thread_manager', '@fos_message.message_manager', '@fos_message.thread_reader', '@fos_message.authorizer', '@fos_message.participant_provider']
+
+  fos_message.message_reader.default:
+    class: FOS\MessageBundle\Reader\Reader
+    public: false
+    arguments: ['@fos_message.participant_provider', '@fos_message.message_manager', '@event_dispatcher']
+
+  fos_message.thread_reader.default:
+    class: FOS\MessageBundle\Reader\Reader
+    public: false
+    arguments: ['@fos_message.participant_provider', '@fos_message.thread_manager', '@event_dispatcher']
+
+  fos_message.deleter.default:
+    class: FOS\MessageBundle\Deleter\Deleter
+    public: false
+    arguments: ['@fos_message.authorizer', '@fos_message.participant_provider', '@event_dispatcher']
+
+  fos_message.twig_extension.default:
+    class: FOS\MessageBundle\Twig\Extension\MessageExtension
+    public: false
+    tags:
+      - { name: twig.extension, alias: fos_message }
+    arguments: ['@fos_message.participant_provider', '@fos_message.provider', '@fos_message.authorizer']
+
+  fos_message.search_query_factory.default:
+    class: FOS\MessageBundle\Search\QueryFactory
+    arguments:
+      - ''
+
+  fos_message.search_finder.default:
+    class: FOS\MessageBundle\Search\Finder
+    arguments: ['@fos_message.participant_provider', '@fos_message.thread_manager']

@@ -1,0 +1,10 @@
+services:
+  message.noop_spam_detector:
+    class: vpaumier\MessageBundle\SpamDetection\NoopSpamDetector
+    public: false
+
+  message.akismet_spam_detector:
+    class: vpaumier\MessageBundle\SpamDetection\AkismetSpamDetector
+    public: false
+    arguments:
+      ['@ornicar_akismet', '@message.participant_provider']

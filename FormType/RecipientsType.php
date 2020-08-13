@@ -5,6 +5,7 @@ namespace FOS\MessageBundle\FormType;
 use FOS\MessageBundle\DataTransformer\RecipientsDataTransformer;
 use FOS\MessageBundle\Util\LegacyFormHelper;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -41,9 +42,9 @@ class RecipientsType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'invalid_message' => 'The selected recipient does not exist',
-        ));
+        ]);
     }
 
     /**
@@ -59,6 +60,6 @@ class RecipientsType extends AbstractType
      */
     public function getParent()
     {
-        return LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\TextType');
+        return LegacyFormHelper::getType(TextType::class);
     }
 }

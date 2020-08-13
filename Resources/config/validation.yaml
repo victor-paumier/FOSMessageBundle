@@ -1,0 +1,37 @@
+FOS\MessageBundle\FormModel\NewThreadMultipleMessage:
+  properties:
+    recipients:
+      - FOS\MessageBundle\Validator\Authorization: ~
+      - FOS\MessageBundle\Validator\SelfRecipient: ~
+      - NotBlank: { message: fos_message.recipients.blank }
+      - Type: { type: FOS\MessageBundle\Model\ParticipantInterface }
+    subject:
+      - NotBlank: { message: fos_message.subject.blank }
+      - Length: { min: 2, max: 255, minMessage:  fos_message.subject.short, maxMessage: fos_message.subject.long }
+    body:
+      - NotBlank: { message: fos_message.body.blank }
+      - Length: { min: 2, max: 10000, minMessage:  fos_message.body.short, maxMessage: fos_message.body.long }
+
+FOS\MessageBundle\FormModel\NewThreadMessage:
+  constraints:
+    - FOS\MessageBundle\Validator\Spam: ~
+  properties:
+    recipient:
+      - FOS\MessageBundle\Validator\Authorization: ~
+      - FOS\MessageBundle\Validator\SelfRecipient: ~
+      - NotBlank: { message: fos_message.recipient.blank }
+      - Type: { type: FOS\MessageBundle\Model\ParticipantInterface }
+    subject:
+      - NotBlank: { message: fos_message.subject.blank }
+      - Length: { min: 2, max: 255, minMessage:  fos_message.subject.short, maxMessage: fos_message.subject.long }
+    body:
+      - NotBlank: { message: fos_message.body.blank }
+      - Length: { min: 2, max: 10000, minMessage:  fos_message.body.short, maxMessage: fos_message.body.long }
+
+FOS\MessageBundle\FormModel\ReplyMessage:
+  constraints:
+    - FOS\MessageBundle\Validator\ReplyAuthorization: ~
+  properties:
+    body:
+      - NotBlank: { message: fos_message.body.blank }
+      - Length: { min: 2, max: 10000, minMessage:  fos_message.body.short, maxMessage: fos_message.body.long }

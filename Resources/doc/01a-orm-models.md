@@ -31,7 +31,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
-use FOS\MessageBundle\Entity\Message as BaseMessage;
+use FOS\MessageBundle\Entity\Message as BaseMessage;use FOS\MessageBundle\Model\ParticipantInterface;use FOS\MessageBundle\Model\ThreadInterface;
 
 /**
  * @ORM\Entity
@@ -50,13 +50,13 @@ class Message extends BaseMessage
      *   targetEntity="AppBundle\Entity\Thread",
      *   inversedBy="messages"
      * )
-     * @var \FOS\MessageBundle\Model\ThreadInterface
+     * @var ThreadInterface
      */
     protected $thread;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
-     * @var \FOS\MessageBundle\Model\ParticipantInterface
+     * @var ParticipantInterface
      */
     protected $sender;
 
@@ -82,7 +82,7 @@ MessageMetadata class
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use FOS\MessageBundle\Entity\MessageMetadata as BaseMessageMetadata;
+use FOS\MessageBundle\Entity\MessageMetadata as BaseMessageMetadata;use FOS\MessageBundle\Model\MessageInterface;use FOS\MessageBundle\Model\ParticipantInterface;
 
 /**
  * @ORM\Entity
@@ -101,13 +101,13 @@ class MessageMetadata extends BaseMessageMetadata
      *   targetEntity="AppBundle\Entity\Message",
      *   inversedBy="metadata"
      * )
-     * @var \FOS\MessageBundle\Model\MessageInterface
+     * @var MessageInterface
      */
     protected $message;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
-     * @var \FOS\MessageBundle\Model\ParticipantInterface
+     * @var ParticipantInterface
      */
     protected $participant;
 }
@@ -124,7 +124,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
-use FOS\MessageBundle\Entity\Thread as BaseThread;
+use FOS\MessageBundle\Entity\Thread as BaseThread;use FOS\MessageBundle\Model\ParticipantInterface;
 
 /**
  * @ORM\Entity
@@ -140,7 +140,7 @@ class Thread extends BaseThread
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
-     * @var \FOS\MessageBundle\Model\ParticipantInterface
+     * @var ParticipantInterface
      */
     protected $createdBy;
 
@@ -175,7 +175,7 @@ ThreadMetadata class
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use FOS\MessageBundle\Entity\ThreadMetadata as BaseThreadMetadata;
+use FOS\MessageBundle\Entity\ThreadMetadata as BaseThreadMetadata;use FOS\MessageBundle\Model\ParticipantInterface;use FOS\MessageBundle\Model\ThreadInterface;
 
 /**
  * @ORM\Entity
@@ -194,13 +194,13 @@ class ThreadMetadata extends BaseThreadMetadata
      *   targetEntity="AppBundle\Entity\Thread",
      *   inversedBy="metadata"
      * )
-     * @var \FOS\MessageBundle\Model\ThreadInterface
+     * @var ThreadInterface
      */
     protected $thread;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
-     * @var \FOS\MessageBundle\Model\ParticipantInterface
+     * @var ParticipantInterface
      */
     protected $participant;
 }

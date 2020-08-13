@@ -2,6 +2,7 @@
 
 namespace FOS\MessageBundle\Model;
 
+use DateTime;
 use Doctrine\Common\Collections\Collection;
 
 interface ThreadInterface extends ReadableInterface
@@ -67,7 +68,7 @@ interface ThreadInterface extends ReadableInterface
      * Gets the date this thread was created at
      * Generally the date of the first message.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreatedAt();
 
@@ -75,7 +76,7 @@ interface ThreadInterface extends ReadableInterface
      * Sets the date this thread was created at
      * Generally the date of the first message.
      */
-    public function setCreatedAt(\DateTime $createdAt);
+    public function setCreatedAt(DateTime $createdAt);
 
     /**
      * Gets the users participating in this conversation.

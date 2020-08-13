@@ -18,6 +18,6 @@ class SelfRecipient extends Constraint
      */
     public function getTargets()
     {
-        return self::PROPERTY_CONSTRAINT;
+        return static::PROPERTY_CONSTRAINT;
     }
 }

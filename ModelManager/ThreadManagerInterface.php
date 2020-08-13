@@ -2,6 +2,7 @@
 
 namespace FOS\MessageBundle\ModelManager;
 
+use Doctrine\ORM\QueryBuilder;
 use FOS\MessageBundle\Model\ParticipantInterface;
 use FOS\MessageBundle\Model\ThreadInterface;
 
@@ -30,7 +31,7 @@ interface ThreadManagerInterface extends ReadableManagerInterface
      *
      * @param ParticipantInterface $participant
      *
-     * @return Builder a query builder suitable for pagination
+     * @return QueryBuilder a query builder suitable for pagination
      */
     public function getParticipantInboxThreadsQueryBuilder(ParticipantInterface $participant);
 
@@ -54,7 +55,7 @@ interface ThreadManagerInterface extends ReadableManagerInterface
      *
      * @param ParticipantInterface $participant
      *
-     * @return Builder a query builder suitable for pagination
+     * @return QueryBuilder a query builder suitable for pagination
      */
     public function getParticipantSentThreadsQueryBuilder(ParticipantInterface $participant);
 
@@ -76,7 +77,7 @@ interface ThreadManagerInterface extends ReadableManagerInterface
      *
      * @param ParticipantInterface $participant
      *
-     * @return Builder a query builder suitable for pagination
+     * @return QueryBuilder a query builder suitable for pagination
      */
     public function getParticipantDeletedThreadsQueryBuilder(ParticipantInterface $participant);
 
@@ -98,7 +99,7 @@ interface ThreadManagerInterface extends ReadableManagerInterface
      * @param ParticipantInterface $participant
      * @param string               $search
      *
-     * @return Builder a query builder suitable for pagination
+     * @return QueryBuilder a query builder suitable for pagination
      */
     public function getParticipantThreadsBySearchQueryBuilder(ParticipantInterface $participant, $search);
 
@@ -159,7 +160,7 @@ interface ThreadManagerInterface extends ReadableManagerInterface
      *
      * @param string $subject
      *
-     * @return Builder a query builder
+     * @return QueryBuilder a query builder
      */
     public function getThreadBySubjectQueryBuilder($subject);
 

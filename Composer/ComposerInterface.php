@@ -17,12 +17,13 @@ interface ComposerInterface
      *
      * @return AbstractMessageBuilder
      */
-    public function newThread();
+    public function newThread(): AbstractMessageBuilder;
 
     /**
      * Starts composing a message in a reply to a thread.
      *
+     * @param ThreadInterface $thread
      * @return AbstractMessageBuilder
      */
-    public function reply(ThreadInterface $thread);
+    public function reply(ThreadInterface $thread): AbstractMessageBuilder;
 }

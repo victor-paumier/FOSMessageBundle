@@ -33,13 +33,13 @@ class RecipientsDataTransformer implements DataTransformerInterface
      *
      * @return string
      */
-    public function transform($recipients)
+    public function transform($recipients): string
     {
-        if (null === $recipients || 0 === $recipients->count()) {
+        if ($recipients === null || $recipients->count() === 0) {
             return '';
         }
 
-        $usernames = array();
+        $usernames = [];
 
         foreach ($recipients as $recipient) {
             $usernames[] = $this->userToUsernameTransformer->transform($recipient);
@@ -56,11 +56,11 @@ class RecipientsDataTransformer implements DataTransformerInterface
      * @throws UnexpectedTypeException
      * @throws TransformationFailedException
      *
-     * @return Collection $recipients
+     * @return Collection|null $recipients
      */
-    public function reverseTransform($usernames)
+    public function reverseTransform($usernames): ?Collection
     {
-        if (null === $usernames || '' === $usernames) {
+        if ($usernames === null || $usernames === '') {
             return null;
         }
 

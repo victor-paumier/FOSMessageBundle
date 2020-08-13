@@ -2,6 +2,7 @@
 
 namespace FOS\MessageBundle\Composer;
 
+use FOS\MessageBundle\MessageBuilder\AbstractMessageBuilder;
 use FOS\MessageBundle\MessageBuilder\NewThreadMessageBuilder;
 use FOS\MessageBundle\MessageBuilder\ReplyMessageBuilder;
 use FOS\MessageBundle\Model\ThreadInterface;
@@ -36,11 +37,11 @@ class Composer implements ComposerInterface
     }
 
     /**
-     * Starts composing a message, starting a new thread.
+     * {@inheritDoc}
      *
      * @return NewThreadMessageBuilder
      */
-    public function newThread()
+    public function newThread(): AbstractMessageBuilder
     {
         $thread = $this->threadManager->createThread();
         $message = $this->messageManager->createMessage();
@@ -49,11 +50,11 @@ class Composer implements ComposerInterface
     }
 
     /**
-     * Starts composing a message in a reply to a thread.
+     * {@inheritDoc}
      *
      * @return ReplyMessageBuilder
      */
-    public function reply(ThreadInterface $thread)
+    public function reply(ThreadInterface $thread): AbstractMessageBuilder
     {
         $message = $this->messageManager->createMessage();
 

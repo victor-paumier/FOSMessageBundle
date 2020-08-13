@@ -1,0 +1,37 @@
+
+fos_message_inbox:
+  path: /inbox
+  methods: GET
+  controller: FOS\MessageBundle\Controller\InboxController::inboxAction
+
+fos_message_sent:
+  path: /sent
+  methods: GET
+  controller: FOS\MessageBundle\Controller\SentController::indexAction
+
+fos_message_deleted:
+  path: /deleted
+  methods: GET
+  controller: FOS\MessageBundle\Controller\ThreadDeletedController::indexAction
+
+fos_message_search:
+  path: /search
+  controller: FOS\MessageBundle\Controller\ThreadSearchController::indexAction
+
+fos_message_thread_new:
+  path: /new
+  controller: FOS\MessageBundle\Controller\ThreadCreateController::indexAction
+
+fos_message_thread_delete:
+  path: /{threadId}/delete
+  methods: POST|DELETE
+  controller: FOS\MessageBundle\Controller\ThreadDeleteController::indexAction
+
+fos_message_thread_undelete:
+  path: /{threadId}/undelete
+  methods: POST
+  controller: FOS\MessageBundle\Controller\ThreadUndeleteController::indexAction
+
+fos_message_thread_view:
+  path: /{threadId}
+  controller: FOS\MessageBundle\Controller\ThreadViewController::indexAction

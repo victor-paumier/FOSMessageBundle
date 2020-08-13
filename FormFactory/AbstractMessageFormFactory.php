@@ -3,6 +3,7 @@
 namespace FOS\MessageBundle\FormFactory;
 
 use FOS\MessageBundle\FormModel\AbstractMessage;
+use InvalidArgumentException;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormFactoryInterface;
 
@@ -44,7 +45,7 @@ abstract class AbstractMessageFormFactory
     public function __construct(FormFactoryInterface $formFactory, $formType, $formName, $messageClass)
     {
         if (!is_string($formType) && !$formType instanceof AbstractType) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'Form type provided is not valid (class name or instance of %s expected, %s given)',
                 'Symfony\Component\Form\AbstractType',
                 is_object($formType) ? get_class($formType) : gettype($formType)

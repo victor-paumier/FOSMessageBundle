@@ -10,8 +10,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class QueryFactory implements QueryFactoryInterface
 {
-    protected $request;
-
     /**
      * The query parameter containing the search term.
      *
@@ -22,21 +20,19 @@ class QueryFactory implements QueryFactoryInterface
     /**
      * Instanciates a new TermGetter.
      *
-     * @param RequestStack|Request $requestStack
      * @param string               $queryParameter
      */
-    public function __construct($requestStack, $queryParameter)
+    public function __construct($queryParameter)
     {
-        $this->request = $requestStack;
         $this->queryParameter = $queryParameter;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function createFromRequest()
+    public function createFromRequest(Request $request)
     {
-        $original = $this->getCurrentRequest()->query->get($this->queryParameter);
+        $original = $request->query->get($this->queryParameter);
         $original = trim($original);
 
         $escaped = $this->escapeTerm($original);
@@ -57,19 +53,5 @@ class QueryFactory implements QueryFactoryInterface
     protected function escapeTerm($term)
     {
         return $term;
-    }
-
-    /**
-     * BC layer to retrieve the current request directly or from a stack.
-     *
-     * @return null|Request
-     */
-    private function getCurrentRequest()
-    {
-        if ($this->request instanceof Request) {
-            return $this->request;
-        }
-
-        return $this->request->getCurrentRequest();
     }
 }

@@ -6,7 +6,7 @@ use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
@@ -19,13 +19,13 @@ class FOSMessageExtension extends Extension
 
         $config = $processor->processConfiguration($configuration, $configs);
 
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
-        $loader->load('orm.xml');
-        $loader->load('config.xml');
-        $loader->load('form.xml');
-        $loader->load('validator.xml');
-        $loader->load('spam_detection.xml');
+        $loader->load('orm.yaml');
+        $loader->load('config.yaml');
+        $loader->load('form.yaml');
+        $loader->load('validator.yaml');
+        $loader->load('spam_detection.yaml');
 
         $container->setParameter('fos_message.message_class', $config['message_class']);
         $container->setParameter('fos_message.thread_class', $config['thread_class']);
@@ -82,7 +82,7 @@ class FOSMessageExtension extends Extension
         $container->setAlias('fos_message.search_query_factory', new Alias($config['search']['query_factory'], true));
         $container->setAlias('fos_message.search_finder', new Alias($config['search']['finder'], true));
         $container->getDefinition('fos_message.search_query_factory.default')
-            ->replaceArgument(1, $config['search']['query_parameter']);
+            ->replaceArgument(0, $config['search']['query_parameter']);
 
         $container->getDefinition('fos_message.recipients_data_transformer')
             ->replaceArgument(0, new Reference($config['user_transformer']));

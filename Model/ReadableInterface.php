@@ -7,6 +7,8 @@ interface ReadableInterface
     /**
      * Tells if this is read by this participant.
      *
+     * @param ParticipantInterface $participant
+     *
      * @return bool
      */
     public function isReadByParticipant(ParticipantInterface $participant);

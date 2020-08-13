@@ -2,13 +2,17 @@
 
 namespace FOS\MessageBundle\Controller;
 
-use FOS\MessageBundle\Provider\ProviderInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use FOS\MessageBundle\Deleter\DeleterInterface;
+use FOS\MessageBundle\FormFactory\AbstractMessageFormFactory;
+use FOS\MessageBundle\FormHandler\AbstractMessageFormHandler;
+use FOS\MessageBundle\ModelManager\ThreadManagerInterface;
+use FOS\MessageBundle\Search\FinderInterface;
+use FOS\MessageBundle\Search\QueryFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class MessageController extends AbstractController
+class MessageController extends AbstractProviderAwareController
 {
     /**
      * Displays the authenticated participant inbox.
@@ -17,11 +21,11 @@ class MessageController extends AbstractController
      */
     public function inboxAction()
     {
-        $threads = $this->getProvider()->getInboxThreads();
+        $threads = $this->provider->getInboxThreads();
 
-        return $this->render('@FOSMessage/Message/inbox.html.twig', array(
+        return $this->render('@FOSMessage/Message/inbox.html.twig', [
             'threads' => $threads,
-        ));
+        ]);
     }
 
     /**
@@ -31,11 +35,11 @@ class MessageController extends AbstractController
      */
     public function sentAction()
     {
-        $threads = $this->getProvider()->getSentThreads();
+        $threads = $this->provider->getSentThreads();
 
-        return $this->render('@FOSMessage/Message/sent.html.twig', array(
+        return $this->render('@FOSMessage/Message/sent.html.twig', [
             'threads' => $threads,
-        ));
+        ]);
     }
 
     /**
@@ -45,115 +49,124 @@ class MessageController extends AbstractController
      */
     public function deletedAction()
     {
-        $threads = $this->getProvider()->getDeletedThreads();
+        $threads = $this->provider->getDeletedThreads();
 
-        return $this->render('@FOSMessage/Message/deleted.html.twig', array(
+        return $this->render('@FOSMessage/Message/deleted.html.twig', [
             'threads' => $threads,
-        ));
+        ]);
     }
 
     /**
      * Displays a thread, also allows to reply to it.
      *
-     * @param string $threadId the thread id
+     * @param Request $request,
+     * @param AbstractMessageFormFactory $replyMessageFormFactory,
+     * @param AbstractMessageFormHandler $formHandler
+     * @param int $threadId the thread id
      *
      * @return Response
      */
-    public function threadAction($threadId)
-    {
-        $thread = $this->getProvider()->getThread($threadId);
-        $form = $this->container->get('fos_message.reply_form.factory')->create($thread);
-        $formHandler = $this->container->get('fos_message.reply_form.handler');
+    public function threadAction(
+        Request $request,
+        AbstractMessageFormFactory $replyMessageFormFactory,
+        AbstractMessageFormHandler $formHandler,
+        int $threadId
+    ) {
+        $thread = $this->provider->getThread($threadId);
+        $form = $replyMessageFormFactory->create($thread);
 
-        if ($message = $formHandler->process($form)) {
-            return new RedirectResponse($this->container->get('router')->generate('fos_message_thread_view', array(
+        if ($message = $formHandler->process($form, $request)) {
+            return $this->redirectToRoute('fos_message_thread_view', [
                 'threadId' => $message->getThread()->getId(),
-            )));
+            ]);
         }
 
-        return $this->render('@FOSMessage/Message/thread.html.twig', array(
+        return $this->render('@FOSMessage/Message/thread.html.twig', [
             'form' => $form->createView(),
             'thread' => $thread,
-        ));
+        ]);
     }
 
     /**
      * Create a new message thread.
      *
+     * @param Request $request
+     * @param AbstractMessageFormFactory $formFactory
+     * @param AbstractMessageFormHandler $formHandler
      * @return Response
      */
-    public function newThreadAction()
-    {
-        $form = $this->container->get('fos_message.new_thread_form.factory')->create();
-        $formHandler = $this->container->get('fos_message.new_thread_form.handler');
+    public function newThreadAction(
+        Request $request,
+        AbstractMessageFormFactory $formFactory,
+        AbstractMessageFormHandler $formHandler
+    ) {
+        $form = $formFactory->create();
 
-        if ($message = $formHandler->process($form)) {
-            return new RedirectResponse($this->container->get('router')->generate('fos_message_thread_view', array(
+        if ($message = $formHandler->process($form, $request)) {
+            return $this->redirectToRoute('fos_message_thread_view', [
                 'threadId' => $message->getThread()->getId(),
-            )));
+            ]);
         }
 
-        return $this->render('@FOSMessage/Message/newThread.html.twig', array(
+        return $this->render('@FOSMessage/Message/newThread.html.twig', [
             'form' => $form->createView(),
             'data' => $form->getData(),
-        ));
+        ]);
     }
 
     /**
      * Deletes a thread.
      *
-     * @param string $threadId the thread id
+     * @param ThreadManagerInterface $threadManager
+     * @param DeleterInterface $deleter
+     * @param int $threadId the thread id
      *
      * @return RedirectResponse
      */
-    public function deleteAction($threadId)
+    public function deleteAction(ThreadManagerInterface $threadManager, DeleterInterface $deleter, int $threadId)
     {
-        $thread = $this->getProvider()->getThread($threadId);
-        $this->container->get('fos_message.deleter')->markAsDeleted($thread);
-        $this->container->get('fos_message.thread_manager')->saveThread($thread);
+        $thread = $this->provider->getThread($threadId);
+        $deleter->markAsDeleted($thread);
+        $threadManager->saveThread($thread);
 
-        return new RedirectResponse($this->container->get('router')->generate('fos_message_inbox'));
+        return $this->redirectToRoute('fos_message_inbox');
     }
 
     /**
      * Undeletes a thread.
      *
-     * @param string $threadId
+     * @param ThreadManagerInterface $threadManager
+     * @param DeleterInterface $deleter
+     * @param int $threadId
      *
      * @return RedirectResponse
      */
-    public function undeleteAction($threadId)
+    public function undeleteAction(ThreadManagerInterface $threadManager, DeleterInterface $deleter, int $threadId)
     {
-        $thread = $this->getProvider()->getThread($threadId);
-        $this->container->get('fos_message.deleter')->markAsUndeleted($thread);
-        $this->container->get('fos_message.thread_manager')->saveThread($thread);
+        $thread = $this->provider->getThread($threadId);
+        $deleter->markAsUndeleted($thread);
+        $threadManager->saveThread($thread);
 
-        return new RedirectResponse($this->container->get('router')->generate('fos_message_inbox'));
+        return $this->redirectToRoute('fos_message_inbox');
     }
 
     /**
      * Searches for messages in the inbox and sentbox.
      *
+     * @param Request $request
+     * @param QueryFactoryInterface $queryFactory
+     * @param FinderInterface $finder
+     *
      * @return Response
      */
-    public function searchAction()
+    public function searchAction(Request $request, QueryFactoryInterface $queryFactory, FinderInterface $finder)
     {
-        $query = $this->container->get('fos_message.search_query_factory')->createFromRequest();
-        $threads = $this->container->get('fos_message.search_finder')->find($query);
+        $query = $queryFactory->createFromRequest($request);
+        $threads = $finder->find($query);
 
-        return $this->render('@FOSMessage/Message/search.html.twig', array(
+        return $this->render('@FOSMessage/Message/search.html.twig', [
             'query' => $query,
             'threads' => $threads,
-        ));
-    }
-
-    /**
-     * Gets the provider service.
-     *
-     * @return ProviderInterface
-     */
-    protected function getProvider()
-    {
-        return $this->container->get('fos_message.provider');
+        ]);
     }
 }
