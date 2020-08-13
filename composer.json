@@ -1,19 +1,20 @@
 {
-    "name": "friendsofsymfony/message-bundle",
+    "name": "vpaumier/message-bundle",
     "type": "symfony-bundle",
     "description": "Provides user-to-user messaging features for your Symfony application.",
     "keywords": ["symfony", "message", "messaging"],
-    "homepage": "https://github.com/FriendsOfSymfony/FOSMessageBundle",
+    "homepage": "https://github.com/victor-paumier/FOSMessageBundle",
     "license": "MIT",
     "authors": [
         {
-            "name": "Thibault Duplessis",
-            "email": "thibault.duplessis@gmail.com",
-            "homepage": "http://ornicar.github.com"
-        },
+            "name": "Victor Paumier",
+            "email": "victor.paumier@gmail.com"
+        }
+    ],
+    "repositories":[
         {
-            "name": "FriendsOfSymfony Community",
-            "homepage": "https://github.com/friendsofsymfony/FOSMessageBundle/contributors"
+            "type": "vcs",
+            "url":  "git@github.com:victor-paumier/message-bundle.git"
         }
     ],
     "require": {
