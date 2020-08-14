@@ -7,7 +7,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
-use FOS\MessageBundle\Entity\Message;
 use FOS\MessageBundle\Model\ParticipantInterface;
 use FOS\MessageBundle\Model\ReadableInterface;
 use FOS\MessageBundle\Model\ThreadInterface;
@@ -63,6 +62,7 @@ class ThreadManager extends BaseThreadManager
      * @param EntityManager  $em
      * @param string         $class
      * @param string         $metaClass
+     * @param string         $messageClass
      * @param MessageManager $messageManager
      */
     public function __construct(EntityManager $em, string $class, string $metaClass, string $messageClass, MessageManager $messageManager)

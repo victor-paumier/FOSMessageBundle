@@ -9,7 +9,7 @@ use FOS\MessageBundle\Provider\ProviderInterface;
 use FOS\MessageBundle\Security\AuthorizerInterface;
 use FOS\MessageBundle\Security\ParticipantProviderInterface;
 use Twig\Extension\AbstractExtension;
-use Twig\TwigFilter;
+use Twig\TwigFunction;
 
 class MessageExtension extends AbstractExtension
 {
@@ -32,10 +32,10 @@ class MessageExtension extends AbstractExtension
     public function getFunctions()
     {
         return array(
-            new TwigFilter('fos_message_is_read', [$this, 'isRead']),
-            new TwigFilter('fos_message_has_unread', [$this, 'hasUnread']),
-            new TwigFilter('fos_message_can_delete_thread', [$this, 'canDeleteThread']),
-            new TwigFilter('fos_message_deleted_by_participant', [$this, 'isThreadDeletedByParticipant']),
+            new TwigFunction('fos_message_is_read', [$this, 'isRead']),
+            new TwigFunction('fos_message_has_unread', [$this, 'hasUnread']),
+            new TwigFunction('fos_message_can_delete_thread', [$this, 'canDeleteThread']),
+            new TwigFunction('fos_message_deleted_by_participant', [$this, 'isThreadDeletedByParticipant']),
         );
     }
 
