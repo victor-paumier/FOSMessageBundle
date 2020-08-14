@@ -14,7 +14,7 @@
     "repositories":[
         {
             "type": "vcs",
-            "url":  "git@github.com:victor-paumier/message-bundle.git"
+            "url":  "git@github.com:victor-paumier/FOSMessageBundle.git"
         }
     ],
     "require": {
@@ -23,7 +23,8 @@
         "symfony/form": "^4.3|^5.0",
         "symfony/framework-bundle": "^4.3|^5.0",
         "symfony/twig-bundle": "^4.3|^5.0",
-        "symfony/asset": "^4.3|^5.0"
+        "symfony/asset": "^4.3|^5.0",
+        "twig/twig": "^2.0|^3.0"
     },
     "require-dev": {
         "symfony/validator": "^4.3|^5.0",

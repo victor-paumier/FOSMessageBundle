@@ -45,6 +45,13 @@ class ThreadManager extends BaseThreadManager
     protected $metaClass;
 
     /**
+     * The message class.
+     *
+     * @var string
+     */
+    protected $messageClass;
+
+    /**
      * The message manager, required to mark
      * the messages of a thread as read/unread.
      *
@@ -58,12 +65,13 @@ class ThreadManager extends BaseThreadManager
      * @param string         $metaClass
      * @param MessageManager $messageManager
      */
-    public function __construct(EntityManager $em, string $class, string $metaClass, MessageManager $messageManager)
+    public function __construct(EntityManager $em, string $class, string $metaClass, string $messageClass, MessageManager $messageManager)
     {
         $this->em = $em;
         $this->repository = $em->getRepository($class);
         $this->class = $em->getClassMetadata($class)->name;
         $this->metaClass = $em->getClassMetadata($metaClass)->name;
+        $this->messageClass = $messageClass;
         $this->messageManager = $messageManager;
     }
 
@@ -116,7 +124,7 @@ class ThreadManager extends BaseThreadManager
     {
         $subQueryMessage = $this->em->createQueryBuilder()
             ->select('max(m2.createdAt)')
-            ->from(Message::class, 'm2')
+            ->from($this->messageClass, 'm2')
             ->innerJoin('m2.thread', 't2')
             ->where('t2.id = t.id')
             ->getQuery()->getDQL();
@@ -261,7 +269,7 @@ class ThreadManager extends BaseThreadManager
     public function hasUnreadThreads(ParticipantInterface $participant)
     {
         return 0 < $this->repository->createQueryBuilder('t')
-            ->count()
+            ->select('count(t.id)')
             ->innerJoin('t.metadata', 'tm')
             ->innerJoin('tm.participant', 'p')
             ->andWhere('p.id = :user_id')

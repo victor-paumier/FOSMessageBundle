@@ -16,4 +16,5 @@ services:
       - '@doctrine.orm.entity_manager'
       - '%fos_message.thread_class%'
       - '%fos_message.thread_meta_class%'
+      - '%fos_message.message_class%'
       - '@fos_message.message_manager'

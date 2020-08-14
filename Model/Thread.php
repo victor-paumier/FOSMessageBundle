@@ -208,10 +208,7 @@ abstract class Thread implements ThreadInterface
         $meta->setIsDeleted($isDeleted);
 
         if ($isDeleted) {
-            // also mark all thread messages as read
-            foreach ($this->getMessages() as $message) {
-                $message->setIsReadByParticipant($participant, true);
-            }
+            $meta->setIsRead(true);
         }
     }
 
