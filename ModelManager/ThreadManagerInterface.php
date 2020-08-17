@@ -5,6 +5,7 @@ namespace FOS\MessageBundle\ModelManager;
 use Doctrine\ORM\QueryBuilder;
 use FOS\MessageBundle\Model\ParticipantInterface;
 use FOS\MessageBundle\Model\ThreadInterface;
+use FOS\MessageBundle\Model\ThreadMetadata;
 
 /**
  * Interface to be implemented by comment thread managers. This adds an additional level
@@ -114,6 +115,15 @@ interface ThreadManagerInterface extends ReadableManagerInterface
      * @return ThreadInterface[]
      */
     public function findParticipantThreadsBySearch(ParticipantInterface $participant, $search);
+
+    /**
+     * Find threadMetadata by thread and participant to avoid iteration
+     *
+     * @param ThreadInterface $thread
+     * @param ParticipantInterface $participant
+     * @return ThreadMetadata|null
+     */
+    public function findMetadataByThreadAndParticipant(ThreadInterface $thread, ParticipantInterface $participant);
 
     /**
      * Gets threads created by a participant.

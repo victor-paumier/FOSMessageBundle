@@ -30,6 +30,11 @@ class ThreadManager extends BaseThreadManager
     protected $repository;
 
     /**
+     * @var EntityRepository
+     */
+    protected $metaRepository;
+
+    /**
      * The model class.
      *
      * @var string
@@ -69,6 +74,7 @@ class ThreadManager extends BaseThreadManager
     {
         $this->em = $em;
         $this->repository = $em->getRepository($class);
+        $this->metaRepository = $em->getRepository($metaClass);
         $this->class = $em->getClassMetadata($class)->name;
         $this->metaClass = $em->getClassMetadata($metaClass)->name;
         $this->messageClass = $messageClass;
@@ -266,6 +272,23 @@ class ThreadManager extends BaseThreadManager
     /**
      * {@inheritdoc}
      */
+    public function findMetadataByThreadAndParticipant(ThreadInterface $thread, ParticipantInterface $participant)
+    {
+        return $this->metaRepository->createQueryBuilder('tm')
+            ->innerJoin('tm.thread', 't')
+            ->innerJoin('tm.participant', 'p')
+            ->where('p.id = :participant_id')
+            ->andWhere('t.id = :thread_id')
+            ->setParameter('participant_id', $participant->getId())
+            ->setParameter('thread_id', $thread->getId())
+
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function hasUnreadThreads(ParticipantInterface $participant)
     {
         return 0 < $this->repository->createQueryBuilder('t')
@@ -378,7 +401,7 @@ class ThreadManager extends BaseThreadManager
     {
         // Participants
         foreach ($thread->getParticipants() as $participant) {
-            $meta = $thread->getMetadataForParticipant($participant);
+            $meta = $this->findMetadataByThreadAndParticipant($thread, $participant);
             if (!$meta) {
                 $meta = $this->createThreadMetadata();
                 $meta->setParticipant($participant);
@@ -389,7 +412,7 @@ class ThreadManager extends BaseThreadManager
 
         // Messages
         foreach ($thread->getMessages() as $message) {
-            $meta = $thread->getMetadataForParticipant($message->getSender());
+            $meta = $this->findMetadataByThreadAndParticipant($thread, $message->getSender());
             if (!$meta) {
                 $meta = $this->createThreadMetadata();
                 $meta->setParticipant($message->getSender());
