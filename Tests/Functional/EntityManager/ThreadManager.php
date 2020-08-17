@@ -24,15 +24,6 @@ class ThreadManager extends BaseThreadManager
         return array(new Thread());
     }
 
-    public function getParticipantSentThreadsQueryBuilder(ParticipantInterface $participant)
-    {
-    }
-
-    public function findParticipantSentThreads(ParticipantInterface $participant)
-    {
-        return array();
-    }
-
     public function getParticipantDeletedThreadsQueryBuilder(ParticipantInterface $participant)
     {
     }

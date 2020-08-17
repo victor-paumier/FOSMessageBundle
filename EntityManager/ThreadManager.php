@@ -163,45 +163,6 @@ class ThreadManager extends BaseThreadManager
     /**
      * {@inheritdoc}
      */
-    public function getParticipantSentThreadsQueryBuilder(ParticipantInterface $participant)
-    {
-        return $this->repository->createQueryBuilder('t')
-            ->innerJoin('t.metadata', 'tm')
-            ->innerJoin('tm.participant', 'p')
-
-            // the participant is in the thread participants
-            ->andWhere('p.id = :user_id')
-            ->setParameter('user_id', $participant->getId())
-
-            // the thread does not contain spam or flood
-            ->andWhere('t.isSpam = :isSpam')
-            ->setParameter('isSpam', false, \PDO::PARAM_BOOL)
-
-            // the thread is not deleted by this participant
-            ->andWhere('tm.isDeleted = :isDeleted')
-            ->setParameter('isDeleted', false, \PDO::PARAM_BOOL)
-
-            // there is at least one message written by this participant
-            ->andWhere('tm.lastParticipantMessageDate IS NOT NULL')
-
-            // sort by date of last message written by this participant
-            ->orderBy('tm.lastParticipantMessageDate', 'DESC')
-        ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findParticipantSentThreads(ParticipantInterface $participant)
-    {
-        return $this->getParticipantSentThreadsQueryBuilder($participant)
-            ->getQuery()
-            ->execute();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getParticipantDeletedThreadsQueryBuilder(ParticipantInterface $participant)
     {
         return $this->repository->createQueryBuilder('t')
@@ -215,9 +176,6 @@ class ThreadManager extends BaseThreadManager
             // the thread is deleted by this participant
             ->andWhere('tm.isDeleted = :isDeleted')
             ->setParameter('isDeleted', true, \PDO::PARAM_BOOL)
-
-            // sort by date of last message
-            ->orderBy('tm.lastMessageDate', 'DESC')
         ;
     }
 
@@ -364,7 +322,7 @@ class ThreadManager extends BaseThreadManager
             ->andWhere('t.subject = :subject')
             ->setParameter('subject', $subject)
             ->setParameter('isSpam', false, \PDO::PARAM_BOOL)
-            ;
+        ;
     }
 
     /**
@@ -391,7 +349,6 @@ class ThreadManager extends BaseThreadManager
     {
         $this->doMetadata($thread);
         $this->doCreatedByAndAt($thread);
-        $this->doDatesOfLastMessageWrittenByOtherParticipant($thread);
     }
 
     /**
@@ -399,27 +356,14 @@ class ThreadManager extends BaseThreadManager
      */
     protected function doMetadata(ThreadInterface $thread)
     {
-        // Participants
         foreach ($thread->getParticipants() as $participant) {
-            $meta = $this->findMetadataByThreadAndParticipant($thread, $participant);
+            $meta = $thread->getMetadataForParticipant($participant);
             if (!$meta) {
                 $meta = $this->createThreadMetadata();
                 $meta->setParticipant($participant);
 
                 $thread->addMetadata($meta);
             }
-        }
-
-        // Messages
-        foreach ($thread->getMessages() as $message) {
-            $meta = $this->findMetadataByThreadAndParticipant($thread, $message->getSender());
-            if (!$meta) {
-                $meta = $this->createThreadMetadata();
-                $meta->setParticipant($message->getSender());
-                $thread->addMetadata($meta);
-            }
-
-            $meta->setLastParticipantMessageDate($message->getCreatedAt());
         }
     }
 
@@ -438,28 +382,6 @@ class ThreadManager extends BaseThreadManager
 
         if (!$thread->getCreatedBy()) {
             $thread->setCreatedBy($message->getSender());
-        }
-    }
-
-    /**
-     * Update the dates of last message written by other participants.
-     */
-    protected function doDatesOfLastMessageWrittenByOtherParticipant(ThreadInterface $thread)
-    {
-        foreach ($thread->getAllMetadata() as $meta) {
-            $participantId = $meta->getParticipant()->getId();
-            $timestamp = 0;
-
-            foreach ($thread->getMessages() as $message) {
-                if ($participantId != $message->getSender()->getId()) {
-                    $timestamp = max($timestamp, $message->getTimestamp());
-                }
-            }
-            if ($timestamp) {
-                $date = new DateTime();
-                $date->setTimestamp($timestamp);
-                $meta->setLastMessageDate($date);
-            }
         }
     }
 

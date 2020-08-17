@@ -29,20 +29,6 @@ class MessageController extends AbstractProviderAwareController
     }
 
     /**
-     * Displays the authenticated participant messages sent.
-     *
-     * @return Response
-     */
-    public function sentAction()
-    {
-        $threads = $this->provider->getSentThreads();
-
-        return $this->render('@FOSMessage/Message/sent.html.twig', [
-            'threads' => $threads,
-        ]);
-    }
-
-    /**
      * Displays the authenticated participant deleted threads.
      *
      * @return Response

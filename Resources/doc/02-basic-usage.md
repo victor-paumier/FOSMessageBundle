@@ -15,12 +15,6 @@ $provider = $container->get('fos_message.provider');
 $threads = $provider->getInboxThreads();
 ```
 
-And the threads in the sentbox::
-
-```php
-$threads = $provider->getSentThreads();
-```
-
 To get a single thread, check it belongs to the authenticated user and mark it as read::
 
 ```php

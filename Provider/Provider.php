@@ -85,16 +85,6 @@ class Provider implements ProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function getSentThreads()
-    {
-        $participant = $this->getAuthenticatedParticipant();
-
-        return $this->threadManager->findParticipantSentThreads($participant);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getDeletedThreads()
     {
         $participant = $this->getAuthenticatedParticipant();

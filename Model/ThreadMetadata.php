@@ -2,27 +2,11 @@
 
 namespace FOS\MessageBundle\Model;
 
-use DateTime;
-
 abstract class ThreadMetadata
 {
     protected $participant;
     protected $isDeleted = false;
     protected $isRead = false;
-
-    /**
-     * Date of last message written by the participant.
-     *
-     * @var DateTime
-     */
-    protected $lastParticipantMessageDate;
-
-    /**
-     * Date of last message written by another participant.
-     *
-     * @var DateTime
-     */
-    protected $lastMessageDate;
 
     /**
      * @return ParticipantInterface
@@ -67,31 +51,5 @@ abstract class ThreadMetadata
     public function setIsRead($isRead)
     {
         $this->isRead = (bool) $isRead;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getLastParticipantMessageDate()
-    {
-        return $this->lastParticipantMessageDate;
-    }
-
-    public function setLastParticipantMessageDate(DateTime $date)
-    {
-        $this->lastParticipantMessageDate = $date;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getLastMessageDate()
-    {
-        return $this->lastMessageDate;
-    }
-
-    public function setLastMessageDate(DateTime $date)
-    {
-        $this->lastMessageDate = $date;
     }
 }

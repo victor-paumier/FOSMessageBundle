@@ -27,20 +27,6 @@ abstract class ThreadMetadata extends BaseThreadMetadata
     protected $isDeleted = false;
 
     /**
-     * @ORM\Column(name="last_message_date", type="datetime", nullable=true)
-     *
-     * @var DateTime
-     */
-    protected $lastMessageDate;
-
-    /**
-     * @ORM\Column(name="last_participant_message_date", type="datetime", nullable=true)
-     *
-     * @var DateTime
-     */
-    protected $lastParticipantMessageDate;
-
-    /**
      * Gets the thread map id.
      *
      * @return int

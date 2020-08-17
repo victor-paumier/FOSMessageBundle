@@ -19,13 +19,6 @@ interface ProviderInterface
     public function getInboxThreads();
 
     /**
-     * Gets the thread in the sentbox of the current user.
-     *
-     * @return ThreadInterface[]
-     */
-    public function getSentThreads();
-
-    /**
      * Gets the deleted threads of the current user.
      *
      * @return ThreadInterface[]

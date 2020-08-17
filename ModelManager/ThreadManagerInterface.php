@@ -49,30 +49,6 @@ interface ThreadManagerInterface extends ReadableManagerInterface
     public function findParticipantInboxThreads(ParticipantInterface $participant);
 
     /**
-     * Finds not deleted threads from a participant,
-     * containing at least one message written by this participant,
-     * ordered by last message written by this participant in reverse order.
-     * In one word: an sentbox.
-     *
-     * @param ParticipantInterface $participant
-     *
-     * @return QueryBuilder a query builder suitable for pagination
-     */
-    public function getParticipantSentThreadsQueryBuilder(ParticipantInterface $participant);
-
-    /**
-     * Finds not deleted threads from a participant,
-     * containing at least one message written by this participant,
-     * ordered by last message written by this participant in reverse order.
-     * In one word: an sentbox.
-     *
-     * @param ParticipantInterface $participant
-     *
-     * @return ThreadInterface[]
-     */
-    public function findParticipantSentThreads(ParticipantInterface $participant);
-
-    /**
      * Finds deleted threads from a participant,
      * ordered by last message date.
      *
